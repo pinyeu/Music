@@ -40,6 +40,7 @@ public class FrSongs extends Fragment {
     private Button btnReload;
     private ArrayList<Song> mListSong = new ArrayList<>();
     private int LOADDB = 0;
+    //
     private LinearLayout lineDataNull;
     private ProgressBar progressBar;
 
