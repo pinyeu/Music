@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#3dabc4"
+        android:orientation="horizontal"
+        android:weightSum="7">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_album_black_24dp" />
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <TextView
+                android:singleLine="true"
+                android:id="@+id/textNameSong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tên bài hát hát hát "
+                android:textColor="@color/colorWhile"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/textNameArtist"
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tên bài hát"
+                android:textColor="@color/colorWhile"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/btnPre"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/btn_pre" />
+
+            <ImageButton
+                android:id="@+id/btnPlay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/btn_play_music" />
+
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/btn_next" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:background="#55b14d"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/line2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="#5affffff"
+            android:orientation="vertical"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/textNameArtist"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_above="@+id/line2"
+                android:layout_weight="1"
+                android:gravity="bottom|center"
+                android:singleLine="true"
+                android:text="Dan Truong"
+                android:textColor="#fff"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/textNumAlbum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="2 album"
+                    android:textColor="#fff" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="|"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:textColor="#fff" />
+                <TextView
+                    android:id="@+id/textNumSong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="5 songs"
+                    android:textColor="#fff" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

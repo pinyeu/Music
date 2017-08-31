@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/next"
+        android:maxLevel="0"
+        android:minLevel="0"/>
+    <item android:drawable="@drawable/next_pressed"
+        android:minLevel="1"
+        android:maxLevel="1"/>
+</level-list>
