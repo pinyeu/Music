@@ -18,6 +18,7 @@ import com.rikkeisoft.music.Model.Song;
 import com.rikkeisoft.music.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by nguyenquanghung on 8/21/17.
@@ -26,9 +27,11 @@ import java.util.ArrayList;
 public class ListviewSongAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Song> mListSong;
+    ArrayList<Song> arraylist = new ArrayList<>();
     public ListviewSongAdapter(Context context, ArrayList<Song> mListSong) {
         this.context = context;
         this.mListSong = mListSong;
+        arraylist.addAll(mListSong);
     }
 
     @Override
@@ -58,5 +61,25 @@ public class ListviewSongAdapter extends BaseAdapter {
         TextView txtArtist = (TextView) rootView.findViewById(R.id.textArtist);
         txtArtist.setText(mListSong.get(position).getArtist());
         return rootView;
+    }
+    public void filter(String charText) {
+
+        charText = charText.toLowerCase(Locale.getDefault());
+        mListSong.clear();
+        if (charText.length() == 0) {
+            mListSong.addAll(arraylist);
+
+        } else {
+            for (Song songDetail : arraylist) {
+                if (charText.length() != 0 && songDetail.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mListSong.add(songDetail);
+                } else if (charText.length() != 0 && songDetail.getArtist().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mListSong.add(songDetail);
+                }else if (charText.length() != 0 && songDetail.getAlbum().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mListSong.add(songDetail);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

@@ -19,29 +19,30 @@
             android:src="@drawable/ic_album_black_24dp" />
 
         <LinearLayout
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
-                android:singleLine="true"
                 android:id="@+id/textNameSong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text="Tên bài hát hát hát "
                 android:textColor="@color/colorWhile"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/textNameArtist"
-                android:singleLine="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text="Tên bài hát"
                 android:textColor="@color/colorWhile"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -51,7 +52,7 @@
             android:gravity="center">
 
             <ImageButton
-                android:id="@+id/btnPre"
+                android:id="@+id/btnPreNotif"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
@@ -60,7 +61,7 @@
                 android:src="@drawable/btn_pre" />
 
             <ImageButton
-                android:id="@+id/btnPlay"
+                android:id="@+id/btnPauseNotif"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
@@ -69,7 +70,7 @@
                 android:src="@drawable/btn_play_music" />
 
             <ImageButton
-                android:id="@+id/btnNext"
+                android:id="@+id/btnNextNotif"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"

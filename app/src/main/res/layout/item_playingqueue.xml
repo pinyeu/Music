@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/imageView"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
+        android:src="@drawable/ic_reorder_grey_500_24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/imgSong"
+        android:paddingRight="4dp"
+        android:src="@drawable/ic_music"
+        android:layout_width="@dimen/size_thumbnail"
+        android:layout_height="@dimen/size_thumbnail" />
+    <LinearLayout
+        android:paddingLeft="8dp"
+        android:weightSum="2"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/textNameSong"
+            android:textColor="@color/colorNameOfSong"
+            android:textSize="18sp"
+            android:text="Ten bai hat"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:textSize="15sp"
+            android:id="@+id/textNameArtist"
+            android:text="nghe si"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+</LinearLayout>

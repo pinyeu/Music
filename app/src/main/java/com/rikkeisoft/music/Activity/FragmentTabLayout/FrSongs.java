@@ -1,13 +1,21 @@
 package com.rikkeisoft.music.Activity.FragmentTabLayout;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,7 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.rikkeisoft.music.Activity.FragmentMain.FrPlayMusic;
 import com.rikkeisoft.music.Adapter.ListviewSongAdapter;
 import com.rikkeisoft.music.Activity.HomeActivity;
 import com.rikkeisoft.music.Model.Song;
@@ -43,13 +53,18 @@ public class FrSongs extends Fragment {
     //
     private LinearLayout lineDataNull;
     private ProgressBar progressBar;
+    private FrPlayMusic frPlayMusic = new FrPlayMusic();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_songs, container, false);
         db = new DatabaseHandler(getActivity());
         initView();
-        new loadListSongs().execute(LOADDB);
         addEvents();
         return view;
     }
@@ -58,14 +73,12 @@ public class FrSongs extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    HomeActivity homeActivity = new HomeActivity();
-                    homeActivity.mIndex = position;
-                    homeActivity.playSong(position);
-                    HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                frPlayMusic.playSong(position);
+//                Bundle bundle = new Bundle();
+//                bundle.putBoolean("updateview",true);
+//                frPlayMusic.setArguments(bundle);
+//                getFragmentManager().beginTransaction().replace(R.id.content_Play,frPlayMusic).commit();
+                HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
         btnReload.setOnClickListener(new View.OnClickListener() {
@@ -82,13 +95,15 @@ public class FrSongs extends Fragment {
         lv = (ListView) view.findViewById(R.id.listViewSongs);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         lineDataNull = (LinearLayout) view.findViewById(R.id.lineDataNull);
-        if (HomeActivity.mediaPlayer.isPlaying() == false) {
-            HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        if (FrPlayMusic.mediaPlayer.isPlaying() == false) {
+//            HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         }
+        mListSong.clear();
+        new loadListSongs().execute(LOADDB);
     }
 
-    public ArrayList<Song> findSongs() {
-        ContentResolver musicResolver = getActivity().getContentResolver();
+    public ArrayList<Song> findSongs(final Context context) {
+        ContentResolver musicResolver = context.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
         final Cursor mCursor = musicResolver.query(uri,
@@ -97,27 +112,35 @@ public class FrSongs extends Fragment {
 
         ArrayList<Song> mList = new ArrayList<Song>();
         try {
-            if (mCursor.moveToFirst()) {
-                do {
-                    String name = mCursor.getString(mCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-                    //// Lay ten bai hat////
-                    String path = mCursor.getString(mCursor
-                            .getColumnIndex(MediaStore.Audio.Media.DATA));
-                    //// lay duong dan bai hat ////
-                    String artist = mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                    // Nghe si//
-                    String album = mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM));
-                    // Ten Album//
-                    String album_id = mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID));
+            int count = 0;
 
-                    Song a = new Song(name, artist, path, album, album_id);
-                    db.addSong(a);
-                    mCursor.moveToNext();
-                } while (!mCursor.isAfterLast());
+            if(mCursor != null)
+            {
+                count = mCursor.getCount();
+
+                if(count > 0)
+                {
+                    while(mCursor.moveToNext())
+                    {
+                        String name = mCursor.getString(mCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+                        //// Lay ten bai hat////
+                        String path = mCursor.getString(mCursor
+                                .getColumnIndex(MediaStore.Audio.Media.DATA));
+                        //// lay duong dan bai hat ////
+                        String artist = mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                        // Nghe si//
+                        String album = mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM));
+                        // Ten Album//
+                        String album_id = mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID));
+
+                        Song a = new Song(name, artist, path, album, album_id);
+                        db.addSong(a);
+                    }
+                }
             }
             mCursor.close();
             mList = db.getListSong();
-        } catch (Exception ex){
+        } catch (Exception ex) {
         }
         return mList;
     }
@@ -132,19 +155,16 @@ public class FrSongs extends Fragment {
 
         @Override
         protected Integer doInBackground(Integer... params) {
-            mListSong.addAll(findSongs());
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            HomeActivity.mList = mListSong;
+            mListSong.addAll(findSongs(getActivity()));
+            FrPlayMusic.mList = mListSong;
             LOADDB = 1;
             return null;
         }
 
         @Override
         protected void onPostExecute(Integer integer) {
+            getFragmentManager().beginTransaction().add(R.id.content_Play,frPlayMusic).commit();
+            Toast.makeText(getActivity(), FrPlayMusic.mList.size()+"", Toast.LENGTH_SHORT).show();
             if (LOADDB == 1) {
                 if (mListSong.size() != 0) {
                     adapter = new ListviewSongAdapter(getActivity(), mListSong);
@@ -164,6 +184,65 @@ public class FrSongs extends Fragment {
 
     @Override
     public void onResume() {
+        FrPlayMusic.mList = mListSong;
         super.onResume();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_home, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        //*** setOnQueryTextFocusChangeListener ***
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchQuery) {
+                adapter.filter(searchQuery.toString().trim());
+                lv.invalidate();
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_search) {
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

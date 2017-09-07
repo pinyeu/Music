@@ -34,7 +34,8 @@ public class FrAlbums extends Fragment{
     private ArrayList<Album> mList= new ArrayList<>();;
     private GridView gridViewAlbum;
     private DatabaseHandler db;
-    private  int LOADDB = 0;
+    private int LOADDB = 0;
+    private final static int OPEN_ALBUM=100;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view =inflater.inflate(R.layout.fragment_albums,container,false);
@@ -60,7 +61,7 @@ public class FrAlbums extends Fragment{
                 bundle.putString("ALBUM_NAME",mList.get(position).getName());
                 bundle.putString("ALBUM_PATH",mList.get(position).getPathCoverArt());
                 intent.putExtra("ALBUM",bundle);
-                startActivity(intent);
+                startActivityForResult(intent,OPEN_ALBUM);
             }
         });
     }
