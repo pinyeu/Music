@@ -30,10 +30,8 @@ public class PageAdapter extends FragmentStatePagerAdapter {
             case 2:
                 FrArtists tabArtists = new FrArtists();
                 return tabArtists;
-            default:
-                FrSongs tabSongs1 = new FrSongs();
-            return tabSongs1;
         }
+        return null;
     }
 
     @Override

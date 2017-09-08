@@ -10,27 +10,30 @@
         android:layout_width="@dimen/size_thumbnail"
         android:layout_height="@dimen/size_thumbnail" />
     <LinearLayout
-        android:paddingLeft="8dp"
-        android:weightSum="2"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:weightSum="2">
+
         <TextView
+            android:singleLine="true"
             android:id="@+id/textNameSong"
-            android:textColor="@color/colorNameOfSong"
-            android:textSize="18sp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="Ten bai hat"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"/>
+            android:textColor="@color/colorNameOfSong"
+            android:textSize="18sp" />
+
         <TextView
-            android:textSize="15sp"
             android:id="@+id/textArtist"
-            android:text="nghe si"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:gravity="center_vertical"/>
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="nghe si"
+            android:textSize="15sp" />
     </LinearLayout>
 </LinearLayout>

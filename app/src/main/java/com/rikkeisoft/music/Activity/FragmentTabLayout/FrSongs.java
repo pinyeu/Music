@@ -2,6 +2,7 @@ package com.rikkeisoft.music.Activity.FragmentTabLayout;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -53,7 +54,7 @@ public class FrSongs extends Fragment {
     //
     private LinearLayout lineDataNull;
     private ProgressBar progressBar;
-    private FrPlayMusic frPlayMusic = new FrPlayMusic();
+    public static FrPlayMusic frPlayMusic = new FrPlayMusic();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,11 +74,9 @@ public class FrSongs extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FrPlayMusic.mList = mListSong;
                 frPlayMusic.playSong(position);
-//                Bundle bundle = new Bundle();
-//                bundle.putBoolean("updateview",true);
-//                frPlayMusic.setArguments(bundle);
-//                getFragmentManager().beginTransaction().replace(R.id.content_Play,frPlayMusic).commit();
+                getFragmentManager().beginTransaction().detach(frPlayMusic).attach(frPlayMusic).commit();
                 HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
@@ -98,7 +97,6 @@ public class FrSongs extends Fragment {
         if (FrPlayMusic.mediaPlayer.isPlaying() == false) {
 //            HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         }
-        mListSong.clear();
         new loadListSongs().execute(LOADDB);
     }
 
@@ -155,16 +153,15 @@ public class FrSongs extends Fragment {
 
         @Override
         protected Integer doInBackground(Integer... params) {
+            mListSong.clear();
             mListSong.addAll(findSongs(getActivity()));
-            FrPlayMusic.mList = mListSong;
             LOADDB = 1;
             return null;
         }
 
         @Override
         protected void onPostExecute(Integer integer) {
-            getFragmentManager().beginTransaction().add(R.id.content_Play,frPlayMusic).commit();
-            Toast.makeText(getActivity(), FrPlayMusic.mList.size()+"", Toast.LENGTH_SHORT).show();
+            getFragmentManager().beginTransaction().replace(R.id.content_Play,frPlayMusic).commit();
             if (LOADDB == 1) {
                 if (mListSong.size() != 0) {
                     adapter = new ListviewSongAdapter(getActivity(), mListSong);
@@ -184,8 +181,12 @@ public class FrSongs extends Fragment {
 
     @Override
     public void onResume() {
-        FrPlayMusic.mList = mListSong;
         super.onResume();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

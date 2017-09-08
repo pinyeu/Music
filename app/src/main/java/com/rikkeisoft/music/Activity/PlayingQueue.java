@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rikkeisoft.music.Activity.FragmentMain.FrPlayMusic;
@@ -25,17 +28,20 @@ import java.util.ArrayList;
 
 public class PlayingQueue extends AppCompatActivity implements OnStartDragListener {
     private static final String TAG = "ActivityPlayingQueue";
+    public static PlayingQueue playingQueue;
     private RecyclerView recyclerView;
     private PlayingQueueAdapter adapter;
     private ArrayList<Song> mlist;
 
+    private TextView textNameSong, textNameArtist;
+    private ImageButton btnPause, btnBack;
+
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    public SlidingUpPanelLayout mLayoutPlay;
-    FrPlayMusic frPlayMusic = new FrPlayMusic();
 
     private ItemTouchHelper mItemTouchHelper;
 
     DatabaseHandler db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,60 +52,53 @@ public class PlayingQueue extends AppCompatActivity implements OnStartDragListen
     }
 
     private void addEvents() {
-//        mLayoutPlay.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-//            @Override
-//            public void onPanelSlide(View panel, float slideOffset) {
-//                Log.i(TAG, "onPanelSlide, slideoffset " + slideOffset);
-//            }
-//
-//            @Override
-//            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-//                Log.i(TAG, "onPanelStateChanged " + newState);
-//                if (mLayoutPlay.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-//                } else if (mLayoutPlay.getPanelState() == SlidingUpPanelLayout.PanelState.DRAGGING) {
-////
-//                }
-//            }
-//        });
-        mLayoutPlay.setFadeOnClickListener(new View.OnClickListener() {
+        btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                Toast.makeText(PlayingQueue.this, mlist.get(0).getName() + "", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
 
     private void initView() {
-        fragmentManager.beginTransaction()
-                .add(R.id.content_Play, frPlayMusic)
-                .commit();
-        //Siding layout Play
-        mLayoutPlay = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        //
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.activity_playing_queue);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mlist = new ArrayList<>();
         mlist.addAll(FrPlayMusic.mList);
-        Toast.makeText(this, mlist.size()+"", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, mlist.size() + "", Toast.LENGTH_SHORT).show();
         recyclerView = (RecyclerView) findViewById(R.id.recycleViewSortListSong);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-        DividerItemDecoration divider = new DividerItemDecoration(this,layoutManager.getOrientation());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new PlayingQueueAdapter(mlist,getApplicationContext(), this);
+        adapter = new PlayingQueueAdapter(mlist, getApplicationContext(), this);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
+        textNameSong = (TextView) findViewById(R.id.textNameSong);
+        textNameSong.setText(mlist.get(FrPlayMusic.mIndex).getName());
+        textNameArtist = (TextView) findViewById(R.id.textNameArtist);
+        textNameArtist.setText(mlist.get(FrPlayMusic.mIndex).getArtist());
+        btnPause = (ImageButton) findViewById(R.id.btnPause);
+        btnBack = (ImageButton) findViewById(R.id.btnBack);
     }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
+    }
+
+    @Override
+    public void finish() {
+        FrPlayMusic.mList = mlist;
+        setResult(FrPlayMusic.OPEN_PLAYINGQUEUE);
+        super.finish();
     }
 }

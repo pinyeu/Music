@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.rikkeisoft.music.Activity.FragmentMain.FrPlayMusic;
+import com.rikkeisoft.music.Activity.FragmentTabLayout.FrAlbums;
 import com.rikkeisoft.music.Adapter.ListviewSongAdapter;
 import com.rikkeisoft.music.Model.Song;
 import com.rikkeisoft.music.R;
@@ -49,6 +51,8 @@ public class AlbumArtist_Activity extends AppCompatActivity {
     private FragmentManager fragmentManager = getSupportFragmentManager();
     public static SlidingUpPanelLayout mLayoutPlay;
     FrPlayMusic frPlayMusic = new FrPlayMusic();
+    private boolean checkPlayListofAblbum = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +66,12 @@ public class AlbumArtist_Activity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FrPlayMusic.mList = mList;
-               fragmentManager.beginTransaction().detach(frPlayMusic).attach(frPlayMusic).commit();
+                if (checkPlayListofAblbum == false) {
+                    FrPlayMusic.mList = mList;
+                    checkPlayListofAblbum = true;
+                }
                 frPlayMusic.playSong(position);
+                getSupportFragmentManager().beginTransaction().detach(frPlayMusic).attach(frPlayMusic).commit();
                 mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
@@ -104,6 +111,9 @@ public class AlbumArtist_Activity extends AppCompatActivity {
                 .commit();
         //Siding layout Play
         mLayoutPlay = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        if (FrPlayMusic.mediaPlayer.isPlaying() == false) {
+            mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        }
         Intent intent = getIntent();
         if (intent.hasExtra("ALBUM")) {
             mIndex = 0;
@@ -177,7 +187,30 @@ public class AlbumArtist_Activity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void finish() {
+        if (checkPlayListofAblbum == true) {
+            FrPlayMusic.mList = mList;
+        }
+        setResult(FrAlbums.OPEN_ALBUM);
         super.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mLayoutPlay.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

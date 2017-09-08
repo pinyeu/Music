@@ -59,7 +59,7 @@ public class FrArtists extends Fragment {
                 bundle.putString("ARTIST_NAME",mList.get(position).getName());
                 bundle.putString("ARTIST_PATH",mList.get(position).getPath());
                 intent.putExtra("ARTIST",bundle);
-                startActivity(intent);
+                startActivityForResult(intent,FrAlbums.OPEN_ALBUM);
             }
         });
     }
@@ -89,6 +89,14 @@ public class FrArtists extends Fragment {
                     lineDataNull.setVisibility(View.VISIBLE);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode ==FrAlbums.OPEN_ALBUM){
+            getFragmentManager().beginTransaction().detach(FrSongs.frPlayMusic).attach(FrSongs.frPlayMusic).commit();
         }
     }
 }

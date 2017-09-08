@@ -12,8 +12,10 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rikkeisoft.music.Activity.AlbumArtist_Activity;
+import com.rikkeisoft.music.Activity.FragmentMain.FrPlayMusic;
 import com.rikkeisoft.music.Adapter.GridviewAlbumAdapter;
 import com.rikkeisoft.music.Model.Album;
 import com.rikkeisoft.music.R;
@@ -35,7 +37,7 @@ public class FrAlbums extends Fragment{
     private GridView gridViewAlbum;
     private DatabaseHandler db;
     private int LOADDB = 0;
-    private final static int OPEN_ALBUM=100;
+    public final static int OPEN_ALBUM=100;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view =inflater.inflate(R.layout.fragment_albums,container,false);
@@ -95,5 +97,13 @@ public class FrAlbums extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode ==FrAlbums.OPEN_ALBUM){
+            getFragmentManager().beginTransaction().detach(FrSongs.frPlayMusic).attach(FrSongs.frPlayMusic).commit();
+        }
     }
 }

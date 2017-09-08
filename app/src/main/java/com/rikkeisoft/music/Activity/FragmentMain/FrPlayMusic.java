@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rikkeisoft.music.Activity.FragmentTabLayout.FrAlbums;
 import com.rikkeisoft.music.Activity.HomeActivity;
 import com.rikkeisoft.music.Activity.PlayingQueue;
 import com.rikkeisoft.music.Adapter.ListviewSongAdapter;
@@ -84,7 +85,7 @@ public class FrPlayMusic extends Fragment {
     public final static String NOTIF_NEXT = "NEXT";
     public final static String NOTIF_PAUSE = "PAUSE";
 
-    private final static int OPEN_PLAYINGQUEUE=101;
+    public final static int OPEN_PLAYINGQUEUE = 101;
 
 
     @Nullable
@@ -192,7 +193,7 @@ public class FrPlayMusic extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PlayingQueue.class);
-                startActivityForResult(intent,OPEN_PLAYINGQUEUE);
+                startActivityForResult(intent, OPEN_PLAYINGQUEUE);
             }
         });
         //btn pause in panel state
@@ -376,5 +377,14 @@ public class FrPlayMusic extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == OPEN_PLAYINGQUEUE) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }else if (requestCode== FrAlbums.OPEN_ALBUM){
+        }
     }
 }
