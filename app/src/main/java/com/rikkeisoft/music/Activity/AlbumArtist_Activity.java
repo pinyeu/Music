@@ -51,7 +51,7 @@ public class AlbumArtist_Activity extends AppCompatActivity {
     private FragmentManager fragmentManager = getSupportFragmentManager();
     public static SlidingUpPanelLayout mLayoutPlay;
     FrPlayMusic frPlayMusic = new FrPlayMusic();
-    private boolean checkPlayListofAblbum = false;
+    private boolean checkPlayListOfAblbum = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +66,9 @@ public class AlbumArtist_Activity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (checkPlayListofAblbum == false) {
+                if (checkPlayListOfAblbum == false) {
                     FrPlayMusic.mList = mList;
-                    checkPlayListofAblbum = true;
+                    checkPlayListOfAblbum = true;
                 }
                 frPlayMusic.playSong(position);
                 getSupportFragmentManager().beginTransaction().detach(frPlayMusic).attach(frPlayMusic).commit();
@@ -198,7 +198,7 @@ public class AlbumArtist_Activity extends AppCompatActivity {
 
     @Override
     public void finish() {
-        if (checkPlayListofAblbum == true) {
+        if (checkPlayListOfAblbum == true) {
             FrPlayMusic.mList = mList;
         }
         setResult(FrAlbums.OPEN_ALBUM);

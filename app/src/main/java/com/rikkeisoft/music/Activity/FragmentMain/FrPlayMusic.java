@@ -2,7 +2,10 @@ package com.rikkeisoft.music.Activity.FragmentMain;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +16,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -69,9 +73,8 @@ public class FrPlayMusic extends Fragment {
     private ListviewSongAdapter adapter;
 
     private ImageView imageCover;
-    ImageButton btn_repeat, btn_shuffle, btnPausePS, btnNext, btnPre;
+    ImageButton btn_repeat, btn_shuffle, btnPausePS,btnPause, btnNext, btnPre;
     private TextView txtDuration, txtNameSongInPS, txtArstistInPS;
-    private FloatingActionButton floatingActionButtonPlay;
     private FloatingActionButton floatingActionButtonSort;
     private CircularSeekBar seekBar;
     private double timeElapsed = 0, finalTime = 0;
@@ -87,6 +90,10 @@ public class FrPlayMusic extends Fragment {
 
     public final static int OPEN_PLAYINGQUEUE = 101;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -113,13 +120,14 @@ public class FrPlayMusic extends Fragment {
         adapter.notifyDataSetChanged();
         ///
         seekBar = (CircularSeekBar) view.findViewById(R.id.seekBar2);
-        floatingActionButtonPlay = (FloatingActionButton) view.findViewById(R.id.fabPlay);
         floatingActionButtonSort = (FloatingActionButton) view.findViewById(R.id.fabSort);
         txtDuration = (TextView) view.findViewById(R.id.txTimeDuration);
         btn_repeat = (ImageButton) view.findViewById(R.id.btn_repeat);
         btn_shuffle = (ImageButton) view.findViewById(R.id.btn_shuffle);
         btnNext = (ImageButton) view.findViewById(R.id.ButtonNext);
         btnPre = (ImageButton) view.findViewById(R.id.ButtonPre);
+        btnPause = (ImageButton) view.findViewById(R.id.btn_pause);
+
         imageCover = (ImageView) view.findViewById(R.id.ImageCover);
         /// Panel State
         txtArstistInPS = (TextView) view.findViewById(R.id.textNameOfArtistPS);
@@ -129,9 +137,18 @@ public class FrPlayMusic extends Fragment {
         notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
         remoteViews = new RemoteViews(getActivity().getPackageName(), R.layout.notification);
         addEventsNotif();
-        Intent notification_intent = new Intent(getActivity(), HomeActivity.class);
-        notification_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        pendingIntent = PendingIntent.getActivity(getActivity(), 0, notification_intent, PendingIntent.FLAG_ONE_SHOT);
+        Intent resultIntent = new Intent(getActivity(), HomeActivity.class);
+
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
+// Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(HomeActivity.class);
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        pendingIntent = PendingIntent.getActivity(getActivity(), 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder = new NotificationCompat.Builder(getActivity());
         //play from activity album
         if (mlistsong.size() > 0) {
@@ -172,6 +189,16 @@ public class FrPlayMusic extends Fragment {
 
         // repeat yourself that again in 100 miliseconds
         durationHandler.postDelayed(updateTimeSeekbar, 100);
+        if(!mediaPlayer.isPlaying()){
+            levelPlay = LEVEL_P;
+            viewButtonPlay();
+        }
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                doNextSong();
+            }
+        });
     }
 
     private void addEvents() {
@@ -183,7 +210,7 @@ public class FrPlayMusic extends Fragment {
             }
         });
         //float btn play/pause
-        floatingActionButtonPlay.setOnClickListener(new View.OnClickListener() {
+        btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewButtonPlay();
@@ -335,12 +362,12 @@ public class FrPlayMusic extends Fragment {
 
     private void viewButtonPlay() {
         if (levelPlay == LEVEL) {
-            floatingActionButtonPlay.setImageLevel(LEVEL);
+            btnPause.setImageLevel(LEVEL);
             btnPausePS.setImageLevel(LEVEL);
             mediaPlayer.start();
             levelPlay = LEVEL_P;
         } else {
-            floatingActionButtonPlay.setImageLevel(LEVEL_P);
+            btnPause.setImageLevel(LEVEL_P);
             btnPausePS.setImageLevel(LEVEL_P);
             mediaPlayer.pause();
             levelPlay = LEVEL;
@@ -385,6 +412,7 @@ public class FrPlayMusic extends Fragment {
         if (resultCode == OPEN_PLAYINGQUEUE) {
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }else if (requestCode== FrAlbums.OPEN_ALBUM){
+
         }
     }
 }

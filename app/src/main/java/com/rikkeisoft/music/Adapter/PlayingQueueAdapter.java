@@ -62,7 +62,7 @@ public class PlayingQueueAdapter extends RecyclerView.Adapter<PlayingQueueAdapte
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, mList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                ((PlayingQueue) context).test(position);
             }
         });
     }
@@ -74,8 +74,19 @@ public class PlayingQueueAdapter extends RecyclerView.Adapter<PlayingQueueAdapte
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(mList, fromPosition, toPosition);
+//        if (fromPosition == FrPlayMusic.mIndex) {
+//            FrPlayMusic.mIndex = toPosition;
+//        }
+//        if (fromPosition > FrPlayMusic.mIndex && toPosition < FrPlayMusic.mIndex) {
+//            FrPlayMusic.mIndex++;
+//        }
+//        if (fromPosition < FrPlayMusic.mIndex && toPosition > FrPlayMusic.mIndex ){
+//            FrPlayMusic.mIndex --;
+//        }
+
+            Collections.swap(mList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
+        FrPlayMusic.mIndex = mList.indexOf(((PlayingQueue) context).songCurrent);
         return true;
     }
 

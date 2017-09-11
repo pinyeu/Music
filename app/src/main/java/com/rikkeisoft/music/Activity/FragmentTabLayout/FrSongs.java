@@ -55,6 +55,9 @@ public class FrSongs extends Fragment {
     private LinearLayout lineDataNull;
     private ProgressBar progressBar;
     public static FrPlayMusic frPlayMusic = new FrPlayMusic();
+
+    public boolean checkPlayListSong = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +77,10 @@ public class FrSongs extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FrPlayMusic.mList = mListSong;
+                if (checkPlayListSong==false) {
+                    FrPlayMusic.mList = mListSong;
+                    checkPlayListSong = true;
+                }
                 frPlayMusic.playSong(position);
                 getFragmentManager().beginTransaction().detach(frPlayMusic).attach(frPlayMusic).commit();
                 HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
@@ -95,7 +101,7 @@ public class FrSongs extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         lineDataNull = (LinearLayout) view.findViewById(R.id.lineDataNull);
         if (FrPlayMusic.mediaPlayer.isPlaying() == false) {
-//            HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+            HomeActivity.mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         }
         new loadListSongs().execute(LOADDB);
     }
@@ -112,14 +118,11 @@ public class FrSongs extends Fragment {
         try {
             int count = 0;
 
-            if(mCursor != null)
-            {
+            if (mCursor != null) {
                 count = mCursor.getCount();
 
-                if(count > 0)
-                {
-                    while(mCursor.moveToNext())
-                    {
+                if (count > 0) {
+                    while (mCursor.moveToNext()) {
                         String name = mCursor.getString(mCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
                         //// Lay ten bai hat////
                         String path = mCursor.getString(mCursor
@@ -161,7 +164,7 @@ public class FrSongs extends Fragment {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            getFragmentManager().beginTransaction().replace(R.id.content_Play,frPlayMusic).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_Play, frPlayMusic).commit();
             if (LOADDB == 1) {
                 if (mListSong.size() != 0) {
                     adapter = new ListviewSongAdapter(getActivity(), mListSong);
@@ -181,6 +184,7 @@ public class FrSongs extends Fragment {
 
     @Override
     public void onResume() {
+        checkPlayListSong = false;
         super.onResume();
     }
 

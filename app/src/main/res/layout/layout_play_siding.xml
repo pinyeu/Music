@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dragView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -79,12 +80,12 @@
         </LinearLayout>
     </RelativeLayout>
     <!--SIDING LAYOUT PLAY MUSIC-->
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
@@ -107,7 +108,10 @@
                     android:layout_height="match_parent"
                     android:background="#7d000000"
                     android:orientation="horizontal"
-                    android:weightSum="6">
+                    android:weightSum="6"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -116,75 +120,106 @@
                         android:gravity="center">
 
                         <ImageButton
-                            android:id="@+id/ButtonPre"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
+                            android:id="@+id/btn_shuffle"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="4dp"
                             android:background="@android:color/transparent"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
                             android:scaleType="centerInside"
-                            android:src="@drawable/btn_pre" />
+                            android:src="@drawable/btn_shuffle" />
                     </LinearLayout>
 
                     <RelativeLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:padding="@dimen/padding16"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:padding="@dimen/padding16">
 
                         <me.tankery.lib.circularseekbar.CircularSeekBar
                             android:id="@+id/seekBar2"
-                            app:cs_pointer_color = "#ff0000"
-                            app:cs_circle_progress_color="#ff3f3f"
-                            android:layout_centerInParent="true"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            app:cs_circle_progress_color="#ff3f3f"
+                            app:cs_pointer_color="#ff0000" />
 
                         <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_centerInParent="true"
+                            android:layout_below="@+id/txTimeDuration"
+                            android:id="@+id/linearLayout2"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:id="@+id/txTimeDuration"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:gravity="center"
-                                android:text="0:05"
-                                android:textColor="@color/colorWhile"
-                                android:textSize="40sp" />
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="vertical">
 
                             <LinearLayout
+                                android:id="@+id/linearLayout3"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/txTimeDuration"
                                 android:gravity="center">
 
                                 <ImageButton
-                                    android:id="@+id/btn_shuffle"
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:layout_marginRight="4dp"
+                                    android:id="@+id/ButtonPre"
+                                    android:layout_width="48dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
                                     android:background="@android:color/transparent"
-                                    android:paddingBottom="4dp"
-                                    android:paddingTop="4dp"
-                                    android:scaleType="centerInside"
-                                    android:src="@drawable/btn_shuffle" />
+                                    android:src="@drawable/ic_skip_previous_black_24dp" />
 
                                 <ImageButton
-                                    android:id="@+id/btn_repeat"
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:layout_marginLeft="4dp"
+                                    android:id="@+id/btn_pause"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginRight="8dp"
                                     android:background="@android:color/transparent"
                                     android:paddingBottom="4dp"
                                     android:paddingTop="4dp"
                                     android:scaleType="centerInside"
-                                    android:src="@drawable/btn_repeat" />
+                                    android:src="@drawable/btn_play_music" />
+
+                                <ImageButton
+
+                                    android:id="@+id/ButtonNext"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="@android:color/transparent"
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/ic_skip_next_black_24dp" />
                             </LinearLayout>
                         </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txTimeDuration"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:gravity="center"
+                            android:text="0:05"
+                            android:textColor="@color/colorWhile"
+                            android:textSize="40sp"
+                            android:layout_marginTop="24dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true" />
+
+                        <android.support.design.widget.FloatingActionButton
+
+                            android:id="@+id/fabSort"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="#f9c311"
+                            android:clickable="true"
+                            android:src="@drawable/ic_swap_vert_black_24dp"
+                            app:backgroundTint="#b49327"
+                            app:fabSize="mini"
+                            android:layout_marginTop="8dp"
+                            android:layout_below="@+id/linearLayout2"
+                            android:layout_centerHorizontal="true" />
                     </RelativeLayout>
 
                     <LinearLayout
@@ -194,13 +229,15 @@
                         android:gravity="center">
 
                         <ImageButton
-                            android:id="@+id/ButtonNext"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
+                            android:id="@+id/btn_repeat"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="4dp"
                             android:background="@android:color/transparent"
+                            android:paddingBottom="4dp"
+                            android:paddingTop="4dp"
                             android:scaleType="centerInside"
-                            android:src="@drawable/btn_next" />
+                            android:src="@drawable/btn_repeat" />
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
@@ -218,27 +255,5 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabPlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:src="@drawable/btn_play_music"
-            app:fabSize="normal"
-            app:layout_anchor="@id/viewB"
-            app:layout_anchorGravity="top|right|end" />
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabSort"
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:backgroundTint="#f9c311"
-            app:backgroundTint="#b49327"
-            android:src="@drawable/ic_swap_vert_black_24dp"
-            app:fabSize="mini"
-            app:layout_anchor="@id/viewB"
-            app:layout_anchorGravity="top|center" />
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

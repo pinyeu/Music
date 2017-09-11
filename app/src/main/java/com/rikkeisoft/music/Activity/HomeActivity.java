@@ -1,5 +1,9 @@
 package com.rikkeisoft.music.Activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -22,6 +26,7 @@ import android.widget.Toast;
 
 import com.rikkeisoft.music.Activity.FragmentMain.FrHome;
 import com.rikkeisoft.music.Activity.FragmentMain.FrPlayMusic;
+import com.rikkeisoft.music.Activity.FragmentTabLayout.FrSongs;
 import com.rikkeisoft.music.Model.Song;
 import com.rikkeisoft.music.R;
 import com.rikkeisoft.music.db.DatabaseHandler;
@@ -38,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     FragmentManager fragmentManager = getSupportFragmentManager();
     android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     public static SlidingUpPanelLayout mLayoutPlay;
+    private static FrPlayMusic frPlayMusic = new FrPlayMusic();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,40 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         initView();
         addEvents();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(FrPlayMusic.NOTIF_NEXT);
+        filter.addAction(FrPlayMusic.NOTIF_PAUSE);
+        filter.addAction(FrPlayMusic.NOTIF_PRE);
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // next song from notification
+                if (intent.hasExtra(FrPlayMusic.NOTIF_NEXT)) {
+                    if (FrPlayMusic.mIndex < FrPlayMusic.mList.size() - 1) {
+                        FrSongs.frPlayMusic.playSong(FrPlayMusic.mIndex + 1);
+                    } else {
+                        FrPlayMusic.mIndex = 0;
+                        FrSongs.frPlayMusic.playSong(FrPlayMusic.mIndex);
+                    }
+                }
+                if (intent.hasExtra(FrPlayMusic.NOTIF_PAUSE)) {
+                    if(FrPlayMusic.mediaPlayer.isPlaying()){
+                        FrPlayMusic.mediaPlayer.pause();
+                    }else {
+                        FrPlayMusic.mediaPlayer.start();
+                    }
+                }
+                if (intent.hasExtra(FrPlayMusic.NOTIF_PRE)) {
+                    if (FrPlayMusic.mIndex != 0) {
+                        FrSongs.frPlayMusic.playSong(FrPlayMusic.mIndex - 1);
+                    } else {
+                        FrPlayMusic.mIndex = FrPlayMusic.mList.size() - 1;
+                        FrSongs.frPlayMusic.playSong(FrPlayMusic.mIndex);
+                    }
+                }
+            }
+        };
+        registerReceiver(broadcastReceiver, filter);
     }
 
     private void initView() {
@@ -56,7 +96,6 @@ public class HomeActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, frHome)
                 .commit();
-        FrPlayMusic frPlayMusic = new FrPlayMusic();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_Play, frPlayMusic)
                 .commit();
@@ -91,11 +130,12 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
+
     @Override
     public void onBackPressed() {
-        if(mLayoutPlay.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
+        if (mLayoutPlay.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             mLayoutPlay.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        }else {
+        } else {
             super.onBackPressed();
         }
     }

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgSong"
-        android:padding="4dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_music"
+        app:civ_border_width="0.5dp"
+        app:civ_border_color="#c4c4c4"
         android:layout_width="@dimen/size_thumbnail"
         android:layout_height="@dimen/size_thumbnail" />
     <LinearLayout

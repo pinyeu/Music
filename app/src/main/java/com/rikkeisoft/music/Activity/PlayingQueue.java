@@ -24,19 +24,18 @@ import com.rikkeisoft.music.R;
 import com.rikkeisoft.music.db.DatabaseHandler;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PlayingQueue extends AppCompatActivity implements OnStartDragListener {
     private static final String TAG = "ActivityPlayingQueue";
-    public static PlayingQueue playingQueue;
+    public Song songCurrent;
     private RecyclerView recyclerView;
     private PlayingQueueAdapter adapter;
     private ArrayList<Song> mlist;
 
-    private TextView textNameSong, textNameArtist;
+    public TextView textNameSong, textNameArtist;
     private ImageButton btnPause, btnBack;
-
-    private FragmentManager fragmentManager = getSupportFragmentManager();
 
     private ItemTouchHelper mItemTouchHelper;
 
@@ -76,18 +75,35 @@ public class PlayingQueue extends AppCompatActivity implements OnStartDragListen
         DividerItemDecoration divider = new DividerItemDecoration(this, layoutManager.getOrientation());
         recyclerView.addItemDecoration(divider);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new PlayingQueueAdapter(mlist, getApplicationContext(), this);
+        adapter = new PlayingQueueAdapter(mlist, this, this);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
+        songCurrent = mlist.get(FrPlayMusic.mIndex);
         textNameSong = (TextView) findViewById(R.id.textNameSong);
         textNameSong.setText(mlist.get(FrPlayMusic.mIndex).getName());
         textNameArtist = (TextView) findViewById(R.id.textNameArtist);
         textNameArtist.setText(mlist.get(FrPlayMusic.mIndex).getArtist());
         btnPause = (ImageButton) findViewById(R.id.btnPause);
         btnBack = (ImageButton) findViewById(R.id.btnBack);
+    }
+
+    public void test(int postion){
+        textNameSong.setText(mlist.get(postion).getName());
+        textNameArtist.setText(mlist.get(postion).getArtist());
+        Toast.makeText(this, "sss"+postion, Toast.LENGTH_SHORT).show();
+        FrPlayMusic.mIndex = postion;
+        try {
+            FrPlayMusic.mediaPlayer.reset();
+            FrPlayMusic.mediaPlayer.setDataSource(mlist.get(FrPlayMusic.mIndex).getPath());
+            FrPlayMusic.mediaPlayer.prepare();
+            FrPlayMusic.mediaPlayer.start();
+        } catch (IllegalArgumentException iae) {
+        } catch (IllegalStateException ise) {
+        } catch (IOException ex) {
+        }
     }
 
     @Override
